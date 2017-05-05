@@ -34,14 +34,13 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionNew_File"/>
     <addaction name="actionOpen_File"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
@@ -50,7 +49,31 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menustyle">
+    <property name="title">
+     <string>&amp;style</string>
+    </property>
+    <addaction name="actionla_muse"/>
+    <addaction name="actionrain_princess"/>
+    <addaction name="actionscream"/>
+    <addaction name="actionudine"/>
+    <addaction name="actionwave"/>
+    <addaction name="actionwreck"/>
+   </widget>
+   <widget class="QMenu" name="menuhelp">
+    <property name="title">
+     <string>help</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menustyle"/>
+   <addaction name="menuhelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -63,7 +86,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionNew_File"/>
    <addaction name="actionOpen_File"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
@@ -135,6 +157,36 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionla_muse">
+   <property name="text">
+    <string>la_muse</string>
+   </property>
+  </action>
+  <action name="actionrain_princess">
+   <property name="text">
+    <string>rain_princess</string>
+   </property>
+  </action>
+  <action name="actionscream">
+   <property name="text">
+    <string>scream</string>
+   </property>
+  </action>
+  <action name="actionudine">
+   <property name="text">
+    <string>udnie</string>
+   </property>
+  </action>
+  <action name="actionwave">
+   <property name="text">
+    <string>wave</string>
+   </property>
+  </action>
+  <action name="actionwreck">
+   <property name="text">
+    <string>wreck</string>
    </property>
   </action>
  </widget>
