@@ -56,6 +56,8 @@ def rgb2qimage(rgb):
 	h, w, channels = rgb.shape
 
 	# Qt expects 32bit BGRA data for color images:
+	from skimage import img_as_ubyte
+	rgb = img_as_ubyte(rgb)
 	bgra = numpy.empty((h, w, 4), numpy.uint8, 'C')
 	bgra[...,0] = rgb[...,2]
 	bgra[...,1] = rgb[...,1]

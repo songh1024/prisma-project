@@ -2,14 +2,15 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import sys,os
+import sys,os, scipy.misc
+import numpy as np
+from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt, QString,QRect
 from PyQt4 import QtGui
 from ui_MainWindow import Ui_MainWindow
 from PyQt4.QtCore import pyqtSlot as Slot
 from PyQt4.QtGui import QFileDialog,QImageReader,QImage,QPixmap,QImageWriter\
     ,QPrintDialog,QPrinter,QPainter,QColor,QMessageBox
-from newimagedlg import NewImageDlg
 from style_transform import style_transfer
 from qimage2ndarray import numpy2qimage
 
@@ -21,7 +22,16 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.printer = None
         self.style_image = None
         self.style = None
+
         self.setupUi(self)
+
+        self.init()
+
+
+    def init(self):
+        self.filename = 'images/chicago.jpg'
+        self.image = QImage(self.filename)
+        self.showImage()
 
     @Slot()
     def on_actionOpen_File_triggered(self):
@@ -61,13 +71,47 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
             msg_box = QMessageBox(QMessageBox.Warning, "Alert", "Please configure the baseline!")
             msg_box.show()
             return
-        nimage = numpy2qimage(self.style_image)
+    #   nimage = numpy2qimage(self.style_image)
+
+        scipy.misc.imsave("images/temporary.jpg", np.clip(self.style_image, 0, 255).astype(np.uint8))
+        nimage = QImage("images/temporary.jpg")
         if nimage.isNull():
             return
         width = self.imageLabel.geometry().width()
         height = self.imageLabel.geometry().height()
         image = nimage.scaled(width, height, Qt.KeepAspectRatio)
         self.imageLabel.setPixmap(QPixmap.fromImage(image))
+
+    def defaultIcon(self):
+        icon_lamuse_clicked = QtGui.QIcon()
+        icon_lamuse_clicked.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/la_muse.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        self.btn_la_muse.setIcon(icon_lamuse_clicked)
+        self.btn_la_muse.setIconSize(QtCore.QSize(80, 80))
+
+        icon_rainprincess = QtGui.QIcon()
+        icon_rainprincess.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/rain_princess.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        self.btn_rain_princess.setIcon(icon_rainprincess)
+        self.btn_rain_princess.setIconSize(QtCore.QSize(80, 80))
+
+        icon_scream = QtGui.QIcon()
+        icon_scream.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/scream.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        self.btn_scream.setIcon(icon_scream)
+        self.btn_scream.setIconSize(QtCore.QSize(78, 95))
+
+        icon_udnie = QtGui.QIcon()
+        icon_udnie.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/udnie.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        self.btn_udnie.setIcon(icon_udnie)
+        self.btn_udnie.setIconSize(QtCore.QSize(80, 80))
+
+        icon_wave = QtGui.QIcon()
+        icon_wave.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wave.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
+        self.btn_wave.setIcon(icon_wave)
+        self.btn_wave.setIconSize(QtCore.QSize(100, 100))
+
+        icon_wreck = QtGui.QIcon()
+        icon_wreck.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wreck.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_wreck.setIcon(icon_wreck)
+        self.btn_wreck.setIconSize(QtCore.QSize(100, 100))
 
 
     @Slot()
@@ -119,40 +163,110 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         quit()
     @Slot()
     def on_actionla_muse_triggered(self):
+        #set icon
+        self.defaultIcon()
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/la_muse_clicked.jpg")), QtGui.QIcon.Normal,
+                       QtGui.QIcon.Off)
+        self.btn_la_muse.setIcon(icon)
+        self.btn_la_muse.setIconSize(QtCore.QSize(80, 80))
+
+        #style-transfer
         self.style = 'la_muse.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
         self.showStyleImage()
     @Slot()
     def on_actionrain_princess_triggered(self):
+        #set icon
+        self.defaultIcon()
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/rain_princess_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_rain_princess.setIcon(icon)
+        self.btn_rain_princess.setIconSize(QtCore.QSize(80, 80))
+
+        #style-transfer
         self.style = 'rain_princess.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
         self.showStyleImage()
     @Slot()
     def on_actionscream_triggered(self):
+        #set icon
+        self.defaultIcon()
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/scream_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_scream.setIcon(icon2)
+        self.btn_scream.setIconSize(QtCore.QSize(78, 95))
+
+        #style_transfer
         self.style = 'scream.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
         self.showStyleImage()
     @Slot()
     def on_actionudine_triggered(self):
+        #set icon
+        self.defaultIcon()
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/udnie_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_udnie.setIcon(icon3)
+        self.btn_udnie.setIconSize(QtCore.QSize(80, 80))
+
+        #style-transfer
         self.style = 'udnie.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
         self.showStyleImage()
 
     @Slot()
     def on_actionwave_triggered(self):
+        #set icon
+        self.defaultIcon()
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wave_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_wave.setIcon(icon4)
+        self.btn_wave.setIconSize(QtCore.QSize(100, 100))
+
+        #style-transfer
         self.style = 'wave.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
         self.showStyleImage()
 
     @Slot()
     def on_actionwreck_triggered(self):
+        #set icon
+        self.defaultIcon()
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wreck_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_wreck.setIcon(icon5)
+        self.btn_wreck.setIconSize(QtCore.QSize(100, 100))
+
+        #style-transfer
         self.style = 'wreck.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
         self.showStyleImage()
 
+    @Slot()
+    def on_btn_la_muse_clicked(self):
+        self.on_actionla_muse_triggered()
 
 
+    @Slot()
+    def on_btn_rain_princess_clicked(self):
+        self.on_actionrain_princess_triggered()
 
+    @Slot()
+    def on_btn_scream_clicked(self):
+        self.on_actionscream_triggered()
+
+    @Slot()
+    def on_btn_udnie_clicked(self):
+        self.on_actionudine_triggered()
+
+    @Slot()
+    def on_btn_wave_clicked(self):
+        self.on_actionwave_triggered()
+
+    @Slot()
+    def on_btn_wreck_clicked(self):
+        self.on_actionwreck_triggered()
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
