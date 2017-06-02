@@ -102,7 +102,7 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>600</x>
       <y>580</y>
       <width>67</width>
       <height>17</height>
@@ -120,7 +120,7 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>740</x>
+      <x>730</x>
       <y>580</y>
       <width>67</width>
       <height>17</height>
@@ -185,9 +185,9 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>480</y>
-      <width>76</width>
-      <height>95</height>
+      <y>490</y>
+      <width>81</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="text">
@@ -199,8 +199,8 @@
     </property>
     <property name="iconSize">
      <size>
-      <width>78</width>
-      <height>95</height>
+      <width>80</width>
+      <height>80</height>
      </size>
     </property>
    </widget>
@@ -237,9 +237,9 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>510</y>
-      <width>101</width>
-      <height>57</height>
+      <y>490</y>
+      <width>81</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="text">
@@ -251,8 +251,8 @@
     </property>
     <property name="iconSize">
      <size>
-      <width>100</width>
-      <height>100</height>
+      <width>80</width>
+      <height>80</height>
      </size>
     </property>
    </widget>
@@ -260,9 +260,9 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>500</y>
-      <width>101</width>
-      <height>71</height>
+      <y>490</y>
+      <width>81</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="text">
@@ -274,8 +274,8 @@
     </property>
     <property name="iconSize">
      <size>
-      <width>100</width>
-      <height>100</height>
+      <width>80</width>
+      <height>80</height>
      </size>
     </property>
    </widget>
@@ -295,20 +295,14 @@
     </property>
     <addaction name="actionOpen_File"/>
     <addaction name="actionSave"/>
-    <addaction name="actionSave_As"/>
     <addaction name="separator"/>
     <addaction name="actionPrint"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menustyle">
     <property name="title">
-     <string>&amp;style</string>
+     <string>&amp;Style</string>
     </property>
     <addaction name="actionla_muse"/>
     <addaction name="actionrain_princess"/>
@@ -319,11 +313,12 @@
    </widget>
    <widget class="QMenu" name="menuhelp">
     <property name="title">
-     <string>help</string>
+     <string>&amp;Help</string>
     </property>
+    <addaction name="action_About"/>
+    <addaction name="action_Help_F1"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
    <addaction name="menustyle"/>
    <addaction name="menuhelp"/>
   </widget>
@@ -341,6 +336,8 @@
    <addaction name="actionOpen_File"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
+   <addaction name="actionPrint"/>
+   <addaction name="actionQuit"/>
   </widget>
   <action name="actionNew_File">
    <property name="icon">
@@ -439,6 +436,16 @@
   <action name="actionwreck">
    <property name="text">
     <string>wreck</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_Help_F1">
+   <property name="text">
+    <string>&amp;Help                     F1</string>
    </property>
   </action>
  </widget>

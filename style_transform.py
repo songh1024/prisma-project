@@ -12,13 +12,15 @@ def style_transfer(style,image_path):
     batch_size = 1
     root_dir = os.path.abspath('')
     checkpoint_dir = os.path.join(root_dir,'style',style)
-    device_t = '/gpu:0'
+
     img_shape = get_img(image_path).shape
 
     g = tf.Graph()
     soft_config = tf.ConfigProto(allow_soft_placement=True)
     soft_config.gpu_options.allow_growth = True
-    with g.as_default(), g.device(device_t), tf.Session(config=soft_config) as sess:
+    # device_t = '/gpu:0'
+    # with g.as_default(), g.device(device_t), tf.Session(config=soft_config) as sess:
+    with g.as_default(), tf.Session(config=soft_config) as sess:
         batch_shape = (batch_size,) + img_shape
         img_placeholder = tf.placeholder(tf.float32, shape=batch_shape, name='img_placeholder')
         preds = transform.net(img_placeholder)

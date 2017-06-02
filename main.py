@@ -2,17 +2,19 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+__version__ = "1.0.0"
+
+import platform
 import sys,os, scipy.misc
 import numpy as np
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import Qt, QString,QRect
-from PyQt4 import QtGui
-from ui_MainWindow import Ui_MainWindow
+from PyQt4.QtCore import Qt,PYQT_VERSION_STR,QT_VERSION_STR
+from ui_MainWindow import Ui_MainWindow,_translate
 from PyQt4.QtCore import pyqtSlot as Slot
 from PyQt4.QtGui import QFileDialog,QImageReader,QImage,QPixmap,QImageWriter\
-    ,QPrintDialog,QPrinter,QPainter,QColor,QMessageBox
+    ,QPrintDialog,QPrinter,QPainter,QMessageBox
 from style_transform import style_transfer
-from qimage2ndarray import numpy2qimage
+
 
 class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -22,6 +24,7 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.printer = None
         self.style_image = None
         self.style = None
+        self.saved = True
 
         self.setupUi(self)
 
@@ -29,6 +32,7 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
 
 
     def init(self):
+        self.setWindowTitle(_translate("MainWindow", "Style Transfer - chicago.jpg", None))
         self.filename = 'images/chicago.jpg'
         self.image = QImage(self.filename)
         self.showImage()
@@ -45,6 +49,7 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
                                                     "Image files ({0})".format(" ".join(formats))))
         if fname:
             self.loadFile(fname)
+            self.changeTitleOriginal()
 
     def loadFile(self, fname=None):
         if fname:
@@ -77,10 +82,8 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         nimage = QImage("images/temporary.jpg")
         if nimage.isNull():
             return
-        width = self.imageLabel.geometry().width()
-        height = self.imageLabel.geometry().height()
-        image = nimage.scaled(width, height, Qt.KeepAspectRatio)
-        self.imageLabel.setPixmap(QPixmap.fromImage(image))
+        self.image = nimage
+        self.showImage()
 
     def defaultIcon(self):
         icon_lamuse_clicked = QtGui.QIcon()
@@ -96,7 +99,7 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         icon_scream = QtGui.QIcon()
         icon_scream.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/scream.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
         self.btn_scream.setIcon(icon_scream)
-        self.btn_scream.setIconSize(QtCore.QSize(78, 95))
+        self.btn_scream.setIconSize(QtCore.QSize(80, 80))
 
         icon_udnie = QtGui.QIcon()
         icon_udnie.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/udnie.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
@@ -106,27 +109,16 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         icon_wave = QtGui.QIcon()
         icon_wave.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wave.jpg")), QtGui.QIcon.Normal,QtGui.QIcon.Off)
         self.btn_wave.setIcon(icon_wave)
-        self.btn_wave.setIconSize(QtCore.QSize(100, 100))
+        self.btn_wave.setIconSize(QtCore.QSize(80, 80))
 
         icon_wreck = QtGui.QIcon()
         icon_wreck.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wreck.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_wreck.setIcon(icon_wreck)
-        self.btn_wreck.setIconSize(QtCore.QSize(100, 100))
+        self.btn_wreck.setIconSize(QtCore.QSize(80, 80))
 
 
     @Slot()
     def on_actionSave_triggered(self):
-        if self.filename is None:
-            return True
-        else:
-            if self.image.save(self.filename, None):
-
-                return True
-            else:
-                return False
-
-    @Slot()
-    def on_actionSave_As_triggered(self):
         fname = self.filename if self.filename is not None else "."
         formats = (["*.{0}".format(unicode(format).lower())
                 for format in QImageWriter.supportedImageFormats()])
@@ -137,7 +129,12 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
             if "." not in fname:
                 fname += ".png"
             self.filename = fname
-            return self.on_actionSave_triggered()
+            if self.image.save(self.filename, None):
+                self.saved = True
+                self.changeTitleOriginal()
+                return True
+            else:
+                return False
         return False
 
 
@@ -158,9 +155,30 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
 
     @Slot()
     def on_actionQuit_triggered(self):
-        msg_box = QMessageBox(QMessageBox.Warning, "Alert", "Please configure the baseline!")
-        msg_box.show()
+        if self.saved == False:
+            reply = QMessageBox.question(self,
+                                 "Image Changer - Unsaved Changes",
+                                 "Save unsaved changes?",
+                                 QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            if reply == QMessageBox.Cancel:
+                return False
+            elif reply == QMessageBox.Yes:
+                return self.on_actionSave_triggered()
+        self.image = None
+        self.filename=None
         quit()
+
+    def closeEvent(self, QCloseEvent):
+        self.on_actionQuit_triggered()
+
+    def changeTitle(self):
+        name = "Style Transfer - " + self.filename.split("/")[-1] + "*"
+        self.setWindowTitle(_translate("MainWindow", name, None))
+
+    def changeTitleOriginal(self):
+        name = "Style Transfer - " + self.filename.split("/")[-1]
+        self.setWindowTitle(_translate("MainWindow", name, None))
+
     @Slot()
     def on_actionla_muse_triggered(self):
         #set icon
@@ -174,7 +192,9 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         #style-transfer
         self.style = 'la_muse.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
+        self.saved = False
         self.showStyleImage()
+        self.changeTitle()
     @Slot()
     def on_actionrain_princess_triggered(self):
         #set icon
@@ -187,7 +207,9 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         #style-transfer
         self.style = 'rain_princess.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
+        self.saved = False
         self.showStyleImage()
+        self.changeTitle()
     @Slot()
     def on_actionscream_triggered(self):
         #set icon
@@ -195,12 +217,14 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/scream_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_scream.setIcon(icon2)
-        self.btn_scream.setIconSize(QtCore.QSize(78, 95))
+        self.btn_scream.setIconSize(QtCore.QSize(80, 80))
 
         #style_transfer
         self.style = 'scream.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
+        self.saved = False
         self.showStyleImage()
+        self.changeTitle()
     @Slot()
     def on_actionudine_triggered(self):
         #set icon
@@ -213,7 +237,9 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         #style-transfer
         self.style = 'udnie.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
+        self.saved = False
         self.showStyleImage()
+        self.changeTitle()
 
     @Slot()
     def on_actionwave_triggered(self):
@@ -222,12 +248,14 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wave_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_wave.setIcon(icon4)
-        self.btn_wave.setIconSize(QtCore.QSize(100, 100))
+        self.btn_wave.setIconSize(QtCore.QSize(80, 80))
 
         #style-transfer
         self.style = 'wave.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
+        self.saved = False
         self.showStyleImage()
+        self.changeTitle()
 
     @Slot()
     def on_actionwreck_triggered(self):
@@ -236,12 +264,14 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap(QtCore.QString.fromUtf8("images/wreck_clicked.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_wreck.setIcon(icon5)
-        self.btn_wreck.setIconSize(QtCore.QSize(100, 100))
+        self.btn_wreck.setIconSize(QtCore.QSize(80, 80))
 
         #style-transfer
         self.style = 'wreck.ckpt'
         self.style_image = style_transfer(self.style, self.filename)
+        self.saved = False
         self.showStyleImage()
+        self.changeTitle()
 
     @Slot()
     def on_btn_la_muse_clicked(self):
@@ -268,6 +298,24 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
     def on_btn_wreck_clicked(self):
         self.on_actionwreck_triggered()
 
+    @Slot()
+    def on_action_About_triggered(self):
+        QMessageBox.about(self, "About Image Style Transfer",
+                          """<b>Image Style Transfer</b> v {0}
+                          <p>Copyright &copy; 2017-4 Qtrac Ltd.
+                          All rights reserved.
+                          <p>This application can be used to image style transfer.
+                          <p>Python {1} - Qt {2} - PyQt {3} on {4}""".format(
+                              __version__, platform.python_version(),
+                              QT_VERSION_STR, PYQT_VERSION_STR,
+                              platform.system()))
+
+    @Slot()
+    def on_action_Help_F1_triggered(self):
+        QMessageBox.about(self, "Help about this application",
+                          """<b>Image Style Transfer</b>
+                          <p>Chose one kind of style,ckick.
+                          <p>Then the style image will show.""")
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     myShow = MyWindow()
