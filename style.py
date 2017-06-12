@@ -1,4 +1,4 @@
-from __future__ import print_function
+rom __future__ import print_function
 import sys, os, pdb
 sys.path.insert(0, 'src')
 import numpy as np, scipy.misc 

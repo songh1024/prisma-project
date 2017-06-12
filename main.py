@@ -302,7 +302,7 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
     def on_action_About_triggered(self):
         QMessageBox.about(self, "About Image Style Transfer",
                           """<b>Image Style Transfer</b> v {0}
-                          <p>Copyright &copy; 2017-4 Qtrac Ltd.
+                          <p>Copyright &copy; 2017-6 GTS.
                           All rights reserved.
                           <p>This application can be used to image style transfer.
                           <p>Python {1} - Qt {2} - PyQt {3} on {4}""".format(
@@ -314,7 +314,7 @@ class MyWindow(QtGui.QMainWindow,Ui_MainWindow):
     def on_action_Help_F1_triggered(self):
         QMessageBox.about(self, "Help about this application",
                           """<b>Image Style Transfer</b>
-                          <p>Chose one kind of style,ckick.
+                          <p>Chose one kind of style,click.
                           <p>Then the style image will show.""")
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
