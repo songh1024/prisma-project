@@ -11,7 +11,7 @@
 
 ### 实现方法
 
-- 风格迁移
+##### 风格迁移
 
 ![](https://github.com/songh1024/prisma-project/blob/master/images/results/%E5%9B%BE%E7%89%871.png?raw=true)
 
@@ -19,7 +19,7 @@
 2. 针对每个可选风格，训练出相应的CNN模型 
 3. 训练好的模型可将输入内容图像的风格变成选定的风格
 
-- 系统结构
+##### 系统结构
 
 ![](https://github.com/songh1024/prisma-project/blob/master/images/results/%E5%9B%BE%E7%89%872.png?raw=true)
 
